@@ -1,5 +1,9 @@
 # Solar System Simulator 3D
 
+<p align="center">
+  <img src="public/logo.png" alt="Solar System Simulator 3D logo" width="220" />
+</p>
+
 A bilingual Three.js solar system simulator built with Vite, TypeScript, and vanilla Three.js. It renders the Sun and the eight planets with real equirectangular textures, self-rotation, orbital motion, focused camera travel, Earth clouds, Saturn rings, orbit paths, and glass-style UI.
 
 ## Install
