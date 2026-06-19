@@ -1,5 +1,7 @@
 # Solar System Simulator 3D
 
+[中文说明](README.zh-CN.md)
+
 <p align="center">
   <img src="public/logo.png" alt="Solar System Simulator 3D logo" width="220" />
 </p>
