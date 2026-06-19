@@ -4,15 +4,18 @@ export type Lang = 'zh' | 'en';
 
 export const translations = {
   zh: {
+    appTitle: '太阳系 3D 模拟器',
+    canvasAria: '3D 太阳系模拟器',
+    loadingStepsAria: '加载步骤',
     loading: '正在加载太阳系...',
     loadingFailed: '纹理加载失败',
     webglUnsupported: '当前浏览器不支持 WebGL，无法显示 3D 太阳系。',
     scrollHint: '拖拽环绕观察，滚动缩放',
     swipeHint: '拖拽环绕观察，双指缩放',
-    currentFocus: '当前聚焦',
-    navigation: '星球导航',
+    currentFocus: '当前焦点',
+    navigation: '太阳系导航',
     missingTexture: '缺失纹理',
-    bodyAria: '切换到',
+    bodyAria: '查看',
     bodies: {
       sun: {
         name: '太阳',
@@ -63,15 +66,18 @@ export const translations = {
     }
   },
   en: {
+    appTitle: 'Solar System Simulator',
+    canvasAria: '3D solar system simulator',
+    loadingStepsAria: 'Loading steps',
     loading: 'Loading Solar System...',
     loadingFailed: 'Texture loading failed',
     webglUnsupported: 'This browser does not support WebGL, so the 3D solar system cannot be displayed.',
     scrollHint: 'Drag to orbit. Scroll to zoom.',
     swipeHint: 'Drag to orbit. Pinch to zoom.',
     currentFocus: 'Current Focus',
-    navigation: 'Planet Navigation',
+    navigation: 'Solar System Navigation',
     missingTexture: 'Missing texture',
-    bodyAria: 'Travel to',
+    bodyAria: 'View',
     bodies: {
       sun: {
         name: 'Sun',

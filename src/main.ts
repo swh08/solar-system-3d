@@ -354,6 +354,10 @@ function wait(duration: number): Promise<void> {
 }
 
 function renderStaticTexts(): void {
+  document.title = t('appTitle');
+  canvas.setAttribute('aria-label', t('canvasAria'));
+  loadingSteps.setAttribute('aria-label', t('loadingStepsAria'));
+
   document.querySelectorAll<HTMLElement>('[data-i18n]').forEach((element) => {
     const key = element.dataset.i18n;
     if (key) {
@@ -361,6 +365,7 @@ function renderStaticTexts(): void {
     }
   });
 
+  document.querySelector<HTMLElement>('.planet-nav')?.setAttribute('aria-label', t('navigation'));
   interactionHint.textContent = isCoarsePointer() ? t('swipeHint') : t('scrollHint');
 }
 
@@ -372,7 +377,8 @@ function renderPlanetNavigation(): void {
     button.type = 'button';
     button.dataset.bodyId = bodyId;
     button.className = 'planet-nav-button';
-    button.setAttribute('aria-label', `${t('bodyAria')} ${getBodyName(bodyId)}`);
+    const bodyAriaLabel = getLanguage() === 'zh' ? `${t('bodyAria')}${getBodyName(bodyId)}` : `${t('bodyAria')} ${getBodyName(bodyId)}`;
+    button.setAttribute('aria-label', bodyAriaLabel);
     const bodyData = SOLAR_SYSTEM_DATA.find((body) => body.id === bodyId);
 
     if (bodyData?.hasRing) {
