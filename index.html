@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A bilingual Three.js 3D solar system simulator with real planet textures."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='24' fill='%23ffb347'/%3E%3Ccircle cx='24' cy='24' r='7' fill='%23fff4b8' opacity='.85'/%3E%3C/svg%3E"
+    />
+    <style>
+      :root {
+        color-scheme: dark;
+        background: #02040a;
+        color: rgba(246, 250, 255, 0.94);
+        font-family:
+          "Avenir Next", "Segoe UI", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+
+      html,
+      body,
+      #app {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+      }
+
+      #solar-canvas {
+        position: fixed;
+        inset: 0;
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      .loading-screen {
+        position: fixed;
+        inset: 0;
+        z-index: 10;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background:
+          radial-gradient(circle at 50% 42%, rgba(255, 193, 93, 0.18), transparent 28%),
+          rgba(1, 3, 8, 0.94);
+      }
+
+      .loading-card {
+        width: min(420px, 100%);
+        padding: 24px;
+        text-align: center;
+      }
+
+      .loading-card p {
+        margin: 0;
+      }
+
+      #loading-title {
+        font-size: 1rem;
+        font-weight: 760;
+      }
+
+      .loading-detail {
+        margin-top: 8px !important;
+        color: rgba(221, 231, 244, 0.68);
+        font-size: 0.82rem;
+        line-height: 1.45;
+      }
+
+      .progress-track {
+        width: 100%;
+        height: 7px;
+        margin: 18px 0 8px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.12);
+      }
+
+      .progress-bar {
+        width: 0;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #ffc15d, #8cecff);
+      }
+
+      .loading-progress {
+        color: rgba(245, 248, 255, 0.82);
+        font-size: 0.76rem;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .loading-steps {
+        display: grid;
+        gap: 6px;
+        margin: 16px 0 0;
+        padding: 0;
+        color: rgba(221, 231, 244, 0.56);
+        font-size: 0.72rem;
+        line-height: 1.2;
+        list-style: none;
+        text-align: left;
+      }
+
+      .loading-steps li {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .loading-steps li::before {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: currentColor;
+        content: "";
+        opacity: 0.8;
+      }
+
+      .loading-screen.is-hidden {
+        visibility: hidden;
+        opacity: 0;
+        pointer-events: none;
+      }
+    </style>
+    <title>Solar System Simulator</title>
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="solar-canvas" aria-label="3D solar system simulator"></canvas>
+
+      <section class="body-panel glass" aria-live="polite">
+        <div class="focus-header">
+          <div id="body-symbol" class="body-symbol" aria-hidden="true">
+            <span class="body-symbol-ring"></span>
+          </div>
+          <div>
+            <h1 id="body-name">Sun</h1>
+            <p class="panel-label" data-i18n="currentFocus">Current Focus</p>
+          </div>
+        </div>
+        <p id="body-description" class="description"></p>
+        <div class="panel-divider" aria-hidden="true"></div>
+        <dl class="stats">
+          <div class="stat-row">
+            <span class="stat-icon stat-icon-rotation" aria-hidden="true"></span>
+            <dt data-i18n="labels.rotation">Rotation</dt>
+            <dd id="body-rotation"></dd>
+          </div>
+          <div class="stat-row">
+            <span class="stat-icon stat-icon-orbit" aria-hidden="true"></span>
+            <dt data-i18n="labels.orbit">Orbit</dt>
+            <dd id="body-orbit"></dd>
+          </div>
+          <div class="stat-row">
+            <span class="stat-icon stat-icon-radius" aria-hidden="true"></span>
+            <dt data-i18n="labels.radius">Radius</dt>
+            <dd id="body-radius"></dd>
+          </div>
+          <div class="stat-row">
+            <span class="stat-icon stat-icon-distance" aria-hidden="true"></span>
+            <dt data-i18n="labels.distance">Orbit Distance</dt>
+            <dd id="body-distance"></dd>
+          </div>
+        </dl>
+      </section>
+
+      <p id="interaction-hint" class="interaction-hint glass">Drag to orbit. Scroll to zoom.</p>
+
+      <nav class="planet-nav glass" aria-label="Planet Navigation">
+        <p class="nav-label" data-i18n="navigation">Planet Navigation</p>
+        <div id="planet-nav-list" class="planet-nav-list"></div>
+      </nav>
+
+      <div id="loading-screen" class="loading-screen">
+        <div class="loading-card glass">
+          <p id="loading-title">Loading Solar System...</p>
+          <p id="loading-detail" class="loading-detail">Initializing orbital renderer</p>
+          <div class="progress-track" aria-hidden="true">
+            <div id="loading-progress-bar" class="progress-bar"></div>
+          </div>
+          <p id="loading-progress" class="loading-progress">0%</p>
+          <ul id="loading-steps" class="loading-steps" aria-label="Loading steps"></ul>
+          <p id="loading-error" class="loading-error" role="alert"></p>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
