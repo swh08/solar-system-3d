@@ -1,8 +1,7 @@
 import * as THREE from 'three';
-import { SIMULATION_CONFIG, SOLAR_SYSTEM_DATA, type BodyId, type SolarBodyData } from '../data/solarSystem';
+import { SOLAR_SYSTEM_DATA, type BodyId, type SolarBodyData } from '../data/solarSystem';
 import type { TextureMap } from '../utils/loadTextures';
 import { degToRad } from '../utils/math';
-import { createOrbitPath } from './createOrbitPath';
 import { createPlanet, type CreatedMoon } from './createPlanet';
 import { createSun } from './createSun';
 
@@ -28,13 +27,11 @@ export interface SolarBodyInstance {
 export interface SolarSystemInstance {
   bodies: Map<BodyId, SolarBodyInstance>;
   root: THREE.Group;
-  orbitPaths: THREE.LineLoop[];
 }
 
 export function createSolarSystem(scene: THREE.Scene, textures: TextureMap): SolarSystemInstance {
   const root = new THREE.Group();
   const bodies = new Map<BodyId, SolarBodyInstance>();
-  const orbitPaths: THREE.LineLoop[] = [];
 
   scene.add(root);
 
@@ -62,12 +59,6 @@ export function createSolarSystem(scene: THREE.Scene, textures: TextureMap): Sol
       continue;
     }
 
-    if (SIMULATION_CONFIG.enableOrbitPaths) {
-      const orbitPath = createOrbitPath(data.orbitRadius);
-      root.add(orbitPath);
-      orbitPaths.push(orbitPath);
-    }
-
     const planet = createPlanet(data, textures);
     pivot.add(planet.group);
     bodies.set(data.id, {
@@ -81,5 +72,5 @@ export function createSolarSystem(scene: THREE.Scene, textures: TextureMap): Sol
     });
   }
 
-  return { bodies, root, orbitPaths };
+  return { bodies, root };
 }

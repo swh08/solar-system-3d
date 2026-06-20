@@ -48,8 +48,7 @@ export interface MoonData {
 
 export const SIMULATION_CONFIG = {
   timeScale: 0.25,
-  enableBloom: true,
-  enableOrbitPaths: true
+  enableBloom: true
 } as const;
 
 export const BODY_ORDER: BodyId[] = [
