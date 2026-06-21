@@ -388,6 +388,11 @@ function renderPlanetNavigation(): void {
     const thumb = document.createElement('span');
     thumb.className = 'planet-thumb';
     thumb.style.setProperty('--planet-texture', `url(${bodyData?.texture ?? ''})`);
+    if (bodyData?.hasClouds && bodyData.cloudTexture) {
+      thumb.classList.add('has-cloud-layer');
+      thumb.style.setProperty('--planet-cloud-texture', `url(${bodyData.cloudTexture})`);
+      thumb.append(createCloudLayer());
+    }
 
     const label = document.createElement('span');
     label.className = 'planet-label';
@@ -423,12 +428,29 @@ function renderBodyInfo(bodyId: BodyId): void {
   bodySymbol.style.setProperty('--planet-texture', `url(${data.texture})`);
   bodySymbol.classList.toggle('is-sun', bodyId === 'sun');
   bodySymbol.classList.toggle('has-ring', Boolean(data.hasRing));
+  bodySymbol.classList.toggle('has-cloud-layer', Boolean(data.hasClouds && data.cloudTexture));
+  if (data.hasClouds && data.cloudTexture) {
+    bodySymbol.style.setProperty('--planet-cloud-texture', `url(${data.cloudTexture})`);
+    if (!bodySymbol.querySelector('.earth-cloud-layer')) {
+      bodySymbol.append(createCloudLayer());
+    }
+  } else {
+    bodySymbol.querySelector('.earth-cloud-layer')?.remove();
+    bodySymbol.style.removeProperty('--planet-cloud-texture');
+  }
   bodyDescription.textContent = getBodyDescription(bodyId);
   const stats = data.realStats[getLanguage()];
   bodyRotation.textContent = stats.rotation;
   bodyOrbit.textContent = stats.orbit;
   bodyRadius.textContent = stats.radius;
   bodyDistance.textContent = stats.distance;
+}
+
+function createCloudLayer(): HTMLSpanElement {
+  const cloudLayer = document.createElement('span');
+  cloudLayer.className = 'earth-cloud-layer';
+  cloudLayer.setAttribute('aria-hidden', 'true');
+  return cloudLayer;
 }
 
 function setupNavButtonState(): void {

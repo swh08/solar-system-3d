@@ -160,6 +160,24 @@ button:focus-visible {
   pointer-events: none;
 }
 
+.earth-cloud-layer {
+  position: absolute;
+  inset: -1px;
+  z-index: 0;
+  border-radius: inherit;
+  background-image: var(--planet-cloud-texture);
+  background-position: 0 50%;
+  background-repeat: repeat-x;
+  background-size: 220% 100%;
+  content: "";
+  opacity: 0.68;
+  pointer-events: none;
+}
+
+.body-symbol .earth-cloud-layer {
+  animation: body-earth-cloud-rotate 54.8s linear infinite;
+}
+
 .body-symbol.is-sun {
   box-shadow:
     0 0 0 7px rgba(255, 193, 93, 0.12),
@@ -434,6 +452,12 @@ button:focus-visible {
   pointer-events: none;
 }
 
+.planet-thumb .earth-cloud-layer {
+  background-size: 210% 100%;
+  opacity: 0.7;
+  animation: nav-earth-cloud-rotate 45.2s linear infinite;
+}
+
 .planet-label {
   display: block;
   min-width: 0;
@@ -469,14 +493,34 @@ button:focus-visible {
   box-shadow:
     inset -12px -9px 16px rgba(0, 0, 0, 0.34),
     0 0 18px rgba(84, 215, 244, 0.34);
-  transform: translateY(-10px) scale(1.5);
+  transform: translateY(-6px) scale(1.25);
 }
 
 .planet-nav-button.is-active:hover .planet-thumb {
-  transform: translateY(-12px) scale(1.5);
+  transform: translateY(-7px) scale(1.25);
 }
 
 @keyframes nav-planet-rotate {
+  from {
+    background-position: 0 50%;
+  }
+
+  to {
+    background-position: -210% 50%;
+  }
+}
+
+@keyframes body-earth-cloud-rotate {
+  from {
+    background-position: 0 50%;
+  }
+
+  to {
+    background-position: -220% 50%;
+  }
+}
+
+@keyframes nav-earth-cloud-rotate {
   from {
     background-position: 0 50%;
   }
@@ -620,8 +664,8 @@ button:focus-visible {
     display: flex;
     gap: 10px;
     overflow-x: auto;
-    padding: 10px 12px 7px;
-    margin: -8px -10px 0;
+    padding: 16px 12px 7px;
+    margin: -14px -10px 0;
     scrollbar-width: none;
   }
 
@@ -718,6 +762,7 @@ button:focus-visible {
     padding: 0;
     font-size: 0.78rem;
     text-align: center;
+    transform: none;
   }
 
   .planet-nav {
